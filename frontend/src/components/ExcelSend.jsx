@@ -120,9 +120,9 @@ const ExcelSend = () => {
         <div className="container">
             <div>
             <h2>Excel Format</h2>
-            <a href="/assets/sample.xlsx" download="sample.xlsx">
+            <a href="/assets/sample.xlsx" download="sample.xlsx" style={{float:'right'}}> 
                     Download Sample Excel File
-                </a> 
+            </a> <br/>
                </div>
                 
                 <div className="form-container">
