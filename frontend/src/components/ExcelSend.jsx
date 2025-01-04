@@ -18,7 +18,7 @@ const ExcelSend = () => {
         const selectedFile = e.target.files[0];
         if (selectedFile) {
             // Check if file is an Excel file
-            if (!selectedFile.name.match(/\.(xlsx|xls)$/)) {
+            if (!selectedFile.name.match(/\.(xlsx|xls|xlsm|csv|xltx|xltm|xlsb|xml)$/)) {
                 setError('Please upload an Excel file (.xlsx or .xls)');
                 setFile(null);
                 if (fileInputRef.current) {
@@ -118,14 +118,19 @@ const ExcelSend = () => {
 
     return (
         <div className="container">
-                <h2>Excel Format</h2>
+            <div>
+            <h2>Excel Format</h2>
+            <a href="/assets/sample.xlsx" download="sample.xlsx">
+                    Download Sample Excel File
+                </a> 
+               </div>
                 
                 <div className="form-container">
                     <div className="file-input-container">
                         <input
                             type="file"
                             onChange={handleFileChange}
-                            accept=".xlsx,.xls"
+                            accept=".xlsx,.xls,.xlsm,.csv,.xltx,.xltm,.xlsb,.xml"
                             className="file-input"
                             disabled={sending}
                             ref={fileInputRef}
