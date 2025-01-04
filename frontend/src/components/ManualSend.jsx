@@ -109,7 +109,6 @@ function ManualSend() {
 
   return (
     <div className="container">
-      <div className="container-1">
         <h2>Manual Email</h2>
         <input
           type="email"
@@ -164,9 +163,6 @@ function ManualSend() {
             Email sent successfully!
           </div>
         )}
-      </div>
-      <div className="container-2">
-      </div>
     </div>
   )
 }

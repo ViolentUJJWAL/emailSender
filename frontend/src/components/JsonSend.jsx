@@ -83,7 +83,6 @@ const JsonSend = () => {
 
     return (
         <div className="container">
-            <div className="container-1">
                 <h2>JSON Format Email Sender</h2>
 
                 <div className="form-container">
@@ -157,7 +156,6 @@ const JsonSend = () => {
                         {sending ? 'Sending...' : 'Send Emails'}
                     </button>
                 </div>
-            </div>
         </div>
     );
 };

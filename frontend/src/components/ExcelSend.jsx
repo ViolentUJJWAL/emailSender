@@ -118,7 +118,6 @@ const ExcelSend = () => {
 
     return (
         <div className="container">
-            <div className="container-1">
                 <h2>Excel Format</h2>
                 
                 <div className="form-container">
@@ -210,20 +209,6 @@ const ExcelSend = () => {
                         {sending ? 'Sending...' : 'Send Emails'}
                     </button>
                 </div>
-            </div>
-            
-            <div className="container-2">
-                <a href="/assets/sample.xlsx" download="sample.xlsx">
-                    <button className="download-button">
-                        Download Sample Excel File
-                    </button>
-                </a>
-                {status && (
-                    <p className="total-sent">
-                        Total Emails Sent: {status.sent}
-                    </p>
-                )}
-            </div>
         </div>
     );
 };
