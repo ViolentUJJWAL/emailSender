@@ -26,7 +26,7 @@ const validateRecipients = (recipients) => {
     }
 };
 
-const sendEmailsController = async (req, res) => {
+exports.sendEmailsController = async (req, res) => {
     try {
         let { recipients, textMessage, htmlMessage, subject, sendingSpeed = 30000 } = req.body;
         
@@ -113,4 +113,10 @@ const sendEmailsController = async (req, res) => {
     }
 };
 
-module.exports = sendEmailsController;
+exports.downloadFile = (req, res) => {
+    const filePath = __dirname + '/sample.xlsx';
+    console.log(filePath)
+    res.download(filePath, 'sample.xlsx', (err) => {
+        if (err) console.error(err);
+    });
+};
