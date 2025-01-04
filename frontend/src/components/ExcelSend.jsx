@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './JsonSend.css';
-import { sendEmails } from '../service/sendEmail';
+import { downloadFile, sendEmails } from '../service/sendEmail';
 
 const ExcelSend = () => {
     const [file, setFile] = useState(null);
@@ -88,13 +88,17 @@ const ExcelSend = () => {
                 for (const line of lines) {
                     try {
                         const data = JSON.parse(line);
-                        
+
                         if (data.status === 'completed') {
                             setStatus({
                                 sent: data.sent,
                                 total: data.total
                             });
                             setSending(false);
+                            setFile(null)
+                            setSubject("")
+                            setEmailContent("")
+                            setHtmlContent("")
                             resetForm(); // Reset form after successful send
                             break;
                         } else {
@@ -116,104 +120,113 @@ const ExcelSend = () => {
         }
     };
 
+    const handleFileDownload = async()=>{
+        try {
+            await downloadFile('sample.xlsx');
+            alert('File downloaded successfully');
+        } catch (error) {
+            console.log(error)
+            alert('Failed to download file');
+        }
+    }
+
     return (
         <div className="container">
             <div>
-            <h2>Excel Format</h2>
-            <a href="/assets/sample.xlsx" download="sample.xlsx" style={{float:'right'}}> 
+                <h2>Excel Format</h2>
+                <button onClick={handleFileDownload}>
                     Download Sample Excel File
-            </a> <br/>
-               </div>
-                
-                <div className="form-container">
-                    <div className="file-input-container">
-                        <input
-                            type="file"
-                            onChange={handleFileChange}
-                            accept=".xlsx,.xls,.xlsm,.csv,.xltx,.xltm,.xlsb,.xml"
-                            className="file-input"
-                            disabled={sending}
-                            ref={fileInputRef}
-                        />
-                        {file && (
-                            <p className="file-name">Selected file: {file.name}</p>
+                </button>
+            </div>
+
+            <div className="form-container">
+                <div className="file-input-container">
+                    <input
+                        type="file"
+                        onChange={handleFileChange}
+                        accept=".xlsx,.xls,.xlsm,.csv,.xltx,.xltm,.xlsb,.xml"
+                        className="file-input"
+                        disabled={sending}
+                        ref={fileInputRef}
+                    />
+                    {file && (
+                        <p className="file-name">Selected file: {file.name}</p>
+                    )}
+                </div>
+
+                <input
+                    type="text"
+                    className="subject-input"
+                    placeholder="Subject"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    disabled={sending}
+                />
+
+                <textarea
+                    className="email-content"
+                    placeholder="Email Content"
+                    value={emailContent}
+                    onChange={(e) => setEmailContent(e.target.value)}
+                    disabled={sending}
+                />
+
+                <textarea
+                    className="html-content"
+                    placeholder="HTML Content (optional)"
+                    value={htmlContent}
+                    onChange={(e) => setHtmlContent(e.target.value)}
+                    disabled={sending}
+                />
+
+                <input
+                    type="number"
+                    className="delay-input"
+                    placeholder="Delay Time in seconds"
+                    value={sendingSpeed}
+                    onChange={(e) => setSendingSpeed(Number(e.target.value))}
+                    disabled={sending}
+                    required
+                />
+
+                {(sending || status) && (
+                    <div className="progress-container">
+                        <div className="progress-bar-container">
+                            <div
+                                className="progress-bar"
+                                style={{ width: `${progress}%` }}
+                            />
+                        </div>
+
+                        <p className="status-text">
+                            {status ? `Sent ${status.sent} of ${status.total} emails` : 'Preparing to send...'}
+                        </p>
+
+                        {status?.lastSent && (
+                            <p className="status-text">
+                                Last sent to: {status.lastSent.email}
+                                <span className={`status-badge ${status.lastSent.status}`}>
+                                    ({status.lastSent.status})
+                                </span>
+                            </p>
                         )}
                     </div>
+                )}
 
-                    <input
-                        type="text"
-                        className="subject-input"
-                        placeholder="Subject"
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        disabled={sending}
-                    />
+                {error && (
+                    <div className="error-message">
+                        {error}
+                    </div>
+                )}
 
-                    <textarea
-                        className="email-content"
-                        placeholder="Email Content"
-                        value={emailContent}
-                        onChange={(e) => setEmailContent(e.target.value)}
-                        disabled={sending}
-                    />
-
-                    <textarea
-                        className="html-content"
-                        placeholder="HTML Content (optional)"
-                        value={htmlContent}
-                        onChange={(e) => setHtmlContent(e.target.value)}
-                        disabled={sending}
-                    />
-
-                    <input
-                        type="number"
-                        className="delay-input"
-                        placeholder="Delay Time in seconds"
-                        value={sendingSpeed}
-                        onChange={(e) => setSendingSpeed(Number(e.target.value))}
-                        min="0"
-                        disabled={sending}
-                        required
-                    />
-
-                    {(sending || status) && (
-                        <div className="progress-container">
-                            <div className="progress-bar-container">
-                                <div
-                                    className="progress-bar"
-                                    style={{ width: `${progress}%` }}
-                                />
-                            </div>
-
-                            <p className="status-text">
-                                {status ? `Sent ${status.sent} of ${status.total} emails` : 'Preparing to send...'}
-                            </p>
-
-                            {status?.lastSent && (
-                                <p className="status-text">
-                                    Last sent to: {status.lastSent.email}
-                                    <span className={`status-badge ${status.lastSent.status}`}>
-                                        ({status.lastSent.status})
-                                    </span>
-                                </p>
-                            )}
-                        </div>
-                    )}
-
-                    {error && (
-                        <div className="error-message">
-                            {error}
-                        </div>
-                    )}
-
-                    <button
-                        className="send-button"
-                        onClick={handleSendEmails}
-                        disabled={sending || !file || !subject || !emailContent}
-                    >
-                        {sending ? 'Sending...' : 'Send Emails'}
-                    </button>
-                </div>
+                <button
+                    className="send-button"
+                    onClick={handleSendEmails}
+                    disabled={sending || !file || !subject || !emailContent}
+                >
+                    {sending ? 'Sending...' : 'Send Emails'}
+                </button>
+            </div>
         </div>
     );
 };
