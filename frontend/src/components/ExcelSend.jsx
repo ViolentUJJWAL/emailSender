@@ -134,9 +134,9 @@ const ExcelSend = () => {
         <div className="container">
             <div>
                 <h2>Excel Format</h2>
-                <button onClick={handleFileDownload}>
+                <a onClick={handleFileDownload} style={{float:"right",color:"blue",cursor:"pointer",textDecoration:"underline"}}>
                     Download Sample Excel File
-                </button>
+                </a><br/>
             </div>
 
             <div className="form-container">
